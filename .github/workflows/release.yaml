@@ -12,10 +12,6 @@ env:
   DOCKERHUB_SLUG: shahradel/cfw-proxy
   GHCR_SLUG: ghcr.io/shahradelahi/cfw-proxy
 
-permissions:
-  contents: read
-  packages: write
-
 jobs:
   release:
     if: github.repository == 'shahradelahi/docker-cfw-proxy'

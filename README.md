@@ -63,7 +63,7 @@ Image: shahradel/cfw-proxy:latest
    - linux/s390x
 ```
 
-### Environment variables
+## Environment variables
 
 - `TZ`: Timezone assigned to the container (default `UTC`)
 - `PROXY_USERNAME`: The username of `Socks5` and `HTTP` proxy (default `awesome-username`)
@@ -74,9 +74,9 @@ Image: shahradel/cfw-proxy:latest
 - `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `AES-256-CFB`)
 - `WGCF_LICENSE_KEY`: The license key of CloudFlare WARP+
 
-> 💡 `WGCF_LICENSE_KEY` is optional and to obtain it follow [this guide](https://github.com/ViRb3/warp-cli#readme)
+> 💡 `WGCF_LICENSE_KEY` is optional and to obtain it follow guides in [`WARP+ license`](#warp-license) section.
 
-### Ports
+## Ports
 
 - `1080`: `Socks5` proxy
 - `8080`: `HTTP` proxy
