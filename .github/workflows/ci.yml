@@ -11,6 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  BUILD_PLATFORMS: linux/amd64,linux/arm64
   GHCR_SLUG: ghcr.io/shahradelahi/cfw-proxy
   TAG: dev
 
@@ -56,4 +57,5 @@ jobs:
           context: .
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
+          platforms: "${{ env.BUILD_PLATFORMS }}"
           tags: "${{ env.GHCR_SLUG }}:${{ env.TAG }}"
