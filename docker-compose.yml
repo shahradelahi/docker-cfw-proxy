@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  cfw-proxy:
+    environment:
+      # ⚠️ Required:
+      # Make sure change this to your host's public address
+      - PROXY_USERNAME=awesome-username
+      # ⚠️ Required:
+      # You can use `openssl rand -base64 8` to generate a secure password
+      - PROXY_PASSWORD=super-secret-password
+
+      # Optional:
+      # Shadowsocks Algorithm
+      # - SS_ALGO=CHACHA20_POLY1305
+
+    image: ghcr.io/shahradelahi/cfw-proxy
+    container_name: cfw-proxy
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - /lib/modules:/lib/modules
+      - warp-data:/data
+    ports:
+      - "1080:1080"
+      - "8080:8080"
+      - "8080:8080"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+
+volumes:
+  persist-data:
+    driver: local
+
+  # sudo docker build --build-arg BUILDPLATFORM=amd64 -t ghcr.io/shahradelahi/cfw-proxy:dev .
+  # sudo docker push ghcr.io/shahradelahi/cfw-proxy:dev
+  # sudo docker exec -it warp curl https://www.cloudflare.com/cdn-cgi/trace/

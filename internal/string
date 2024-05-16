@@ -1,0 +1,13 @@
+#!/bin/bash
+
+lowercase() {
+  echo "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+uppercase() {
+  echo "$1" | tr '[:lower:]' '[:upper:]'
+}
+
+urlencode() {
+  printf %s "$1" | jq -sRr @uri
+}

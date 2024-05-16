@@ -1,0 +1,23 @@
+#!/bin/bash
+
+register_wgcf_config() {
+  wgcf register --accept-tos
+  wgcf update
+}
+
+update_wgcf_config() {
+  local IFACE=$(ip route show default | awk '{print $5}')
+  local IPv4=$(ip addr show dev "$IFACE" | awk '/inet /{print $2}' | cut -d' ' -f2)
+  local IPv6=$(ip addr show dev "$IFACE" | awk '/inet6 /{print $2}' | cut -d' ' -f2)
+  local DIR="$(mktemp -d)"
+  local DIST="${DIR}/wgcf-profile.conf"
+
+  mv wgcf-profile.conf "$DIR"
+  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" "$DIST"
+  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" "$DIST"
+  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" "$DIST"
+  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" "$DIST"
+
+  mkdir -p "$(dirname "$1")"
+  mv "$DIST" "$1"
+}

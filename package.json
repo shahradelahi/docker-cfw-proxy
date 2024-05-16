@@ -1,0 +1,31 @@
+{
+  "name": "docker-cfw-proxy",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "pnpm drop && docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "build": "docker buildx build -t ghcr.io/shahradelahi/cfw-proxy .",
+    "drop": "docker compose rm -fsv",
+    "start": "docker compose -f docker-compose.yml up",
+    "test": "docker exec cfw-proxy curl https://www.cloudflare.com/cdn-cgi/trace/",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "ci:publish": "pnpm build && changeset publish"
+  },
+  "keywords": [
+    "docker",
+    "cloudflare",
+    "warp",
+    "proxy",
+    "socks5",
+    "http",
+    "shadowsocks"
+  ],
+  "author": "Shahrad Elahi <shahrad@litehex.com> (https://github.com/shahradelahi)",
+  "license": "GPL-3.0",
+  "packageManager": "pnpm@8.15.7",
+  "dependencies": {
+    "@changesets/cli": "^2.27.1",
+    "prettier": "^3.2.5",
+    "prettier-plugin-sh": "^0.14.0"
+  }
+}

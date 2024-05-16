@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  cfw-proxy:
+    image: ghcr.io/shahradelahi/cfw-proxy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "1080:1080"
+    environment:
+      - DEBUG=true

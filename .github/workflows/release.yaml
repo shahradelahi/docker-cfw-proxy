@@ -1,0 +1,104 @@
+name: Release Package
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: "${{ github.workflow }}-${{ github.ref }}"
+
+env:
+  BUILD_PLATFORMS: linux/amd64,linux/arm64
+  DOCKERHUB_SLUG: shahradel/cfw-proxy
+  GHCR_SLUG: ghcr.io/shahradelahi/cfw-proxy
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  release:
+    if: github.repository == 'shahradelahi/docker-cfw-proxy'
+    runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.changesets.outputs.published }}
+      publishedPackages: ${{ steps.changesets.outputs.publishedPackages }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "pnpm"
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          commit: "chore(release): version package"
+          title: "chore(release): version package"
+          publish: pnpm ci:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build & Publish ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    needs: release
+    if: needs.release.outputs.published == 'true'
+    strategy:
+      fail-fast: true
+      matrix:
+        package: ${{ fromJson(needs.release.outputs.publishedPackages) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-qemu-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.DOCKERHUB_SLUG }}
+            ${{ env.GHCR_SLUG }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ matrix.package.version }}
+
+      - name: Build and push
+        uses: docker/bake-action@v4
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          targets: image-all
+
+      - name: Check manifest
+        run: |
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
+
+      - name: Inspect image
+        run: |
+          docker pull ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker pull ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
+          docker image inspect ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
