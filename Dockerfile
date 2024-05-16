@@ -22,25 +22,9 @@ RUN chmod +x /entrypoint.sh
 FROM alpine as wgcf
 ARG TARGETARCH
 ARG WGCF_VERSION
-RUN <<EOT
-set -ex
-case "$(arch)" in
-  x86_64 | amd64) _ARCH="amd64" ;;
-  aarch64 | arm64) _ARCH="arm64" ;;
-  armv7l | armv7) _ARCH="armv7" ;;
-  mips64le) _ARCH="mips64le_softfloat" ;;
-  386 | s390x)
-    _ARCH="$TARGETARCH"
-    ;;
-  *)
-    echo "Unsupported architecture. $(arch)"
-    exit 1
-    ;;
-esac
-export DOWNLOAD_URL="https://github.com/ViRb3/wgcf/releases/download/v${WGCF_VERSION}/wgcf_${WGCF_VERSION}_linux_${_ARCH}"
-wget -qO /usr/local/bin/wgcf "$DOWNLOAD_URL"
-chmod +x /usr/local/bin/wgcf
-EOT
+COPY internal/wgcf /etc/cfw-proxy/internal/wgcf
+RUN source /etc/cfw-proxy/internal/wgcf \
+  && install_wgcf
 
 FROM --platform=${BUILDPLATFORM} base
 LABEL maintainer="Shahrad Elahi <https://github.com/shahradelahi>"
