@@ -19,7 +19,7 @@ services:
     privileged: true
     volumes:
       - /lib/modules:/lib/modules
-      - warp-data:/data
+      - persist-data:/data
     ports:
       - "1080:1080"
       - "8080:8080"
