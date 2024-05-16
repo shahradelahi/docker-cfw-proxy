@@ -1,6 +1,7 @@
 {
   "name": "docker-cfw-proxy",
   "version": "1.0.0",
+  "private": true,
   "scripts": {
     "dev": "pnpm drop && docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
     "build": "docker buildx build -t ghcr.io/shahradelahi/cfw-proxy .",
