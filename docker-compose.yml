@@ -10,8 +10,7 @@ services:
       - PROXY_PASSWORD=super-secret-password
 
       # Optional:
-      # Shadowsocks Algorithm
-      # - SS_ALGO=CHACHA20_POLY1305
+      - SHADOWSOCKS_CIPHER=AES-256-CFB
 
     image: ghcr.io/shahradelahi/cfw-proxy
     container_name: cfw-proxy
@@ -23,7 +22,7 @@ services:
     ports:
       - "1080:1080"
       - "8080:8080"
-      - "8080:8080"
+      - "8338:8338"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -35,7 +34,3 @@ services:
 volumes:
   persist-data:
     driver: local
-
-  # sudo docker build --build-arg BUILDPLATFORM=amd64 -t ghcr.io/shahradelahi/cfw-proxy:dev .
-  # sudo docker push ghcr.io/shahradelahi/cfw-proxy:dev
-  # sudo docker exec -it warp curl https://www.cloudflare.com/cdn-cgi/trace/

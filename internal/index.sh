@@ -11,35 +11,37 @@ log() {
 }
 
 generate_gost_config() {
+  _USERNAME=${PROXY_USERNAME:-awesome-username}
+  _PASSWORD=${PROXY_PASSWORD:-super-secret-password}
   tee "$1" &> /dev/null << EOF
 services:
 - name: http
-  addr: ":8080"
+  addr: ":${HTTP_PORT:-8080}"
   handler:
     type: http
     auth:
-      username: ${PROXY_USERNAME:-awesome-username}
-      password: "${PROXY_PASSWORD:-super-secret-password}"
+      username: ${_USERNAME}
+      password: "${_PASSWORD}"
   listener:
     type: tcp
 - name: socks
-  addr: ":1080"
+  addr: ":${SOCKS5_PORT:-1080}"
   handler:
     type: socks
     udp: true
     bind: true
     auth:
-      username: ${PROXY_USERNAME:-awesome-username}
-      password: "${PROXY_PASSWORD:-super-secret-password}"
+      username: ${_USERNAME}
+      password: "${_PASSWORD}"
   listener:
     type: tcp
 - name: shadowsocks
-  addr: ":8338"
+  addr: ":${SHADOWSOCKS_PORT:-8338}"
   handler:
     type: ss
     auth:
-      username: ${SS_ALGO:-CHACHA20_POLY1305}
-      password: "${PROXY_PASSWORD:-super-secret-password}"
+      username: ${SHADOWSOCKS_CIPHER:-AES-256-CFB}
+      password: "${_PASSWORD}"
   listener:
     type: tcp
 EOF

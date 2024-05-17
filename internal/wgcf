@@ -9,17 +9,21 @@ update_wgcf_config() {
   local IFACE=$(ip route show default | awk '{print $5}')
   local IPv4=$(ip addr show dev "$IFACE" | awk '/inet /{print $2}' | cut -d' ' -f2)
   local IPv6=$(ip addr show dev "$IFACE" | awk '/inet6 /{print $2}' | cut -d' ' -f2)
-  local DIR="$(mktemp -d)"
-  local DIST="${DIR}/wgcf-profile.conf"
 
-  mv wgcf-profile.conf "$DIR"
-  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" "$DIST"
-  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" "$DIST"
-  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" "$DIST"
-  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" "$DIST"
+  local TEMP_DIR="$(mktemp -d)"
+  local DIST_DIR="$(dirname "$1")"
 
-  mkdir -p "$(dirname "$1")"
-  mv "$DIST" "$1"
+  wgcf update
+  wgcf generate
+  mkdir -p "$DIST_DIR"
+  mv wgcf-account.toml "$DIST_DIR/wgcf-account.toml"
+  mv wgcf-profile.conf "$TEMP_DIR/wgcf-profile.conf"
+
+  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" "$TEMP_DIR/wgcf-profile.conf"
+  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" "$TEMP_DIR/wgcf-profile.conf"
+  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" "$TEMP_DIR/wgcf-profile.conf"
+  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" "$TEMP_DIR/wgcf-profile.conf"
+  mv "$TEMP_DIR/wgcf-profile.conf" "$DIST_DIR/wgcf-profile.conf"
 }
 
 install_wgcf() {
@@ -36,7 +40,7 @@ install_wgcf() {
       exit 1
       ;;
   esac
-  export DOWNLOAD_URL="https://github.com/ViRb3/wgcf/releases/download/v${WGCF_VERSION}/wgcf_${WGCF_VERSION}_linux_${_ARCH}"
+  local DOWNLOAD_URL="https://github.com/ViRb3/wgcf/releases/download/v${WGCF_VERSION}/wgcf_${WGCF_VERSION}_linux_${_ARCH}"
   wget -qO /usr/local/bin/wgcf "$DOWNLOAD_URL"
   chmod +x /usr/local/bin/wgcf
 }

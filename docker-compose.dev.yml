@@ -1,11 +1,16 @@
 version: "3.8"
 services:
   cfw-proxy:
-    image: ghcr.io/shahradelahi/cfw-proxy
+    image: ghcr.io/shahradelahi/cfw-proxy:dev
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "1080:1080"
+    volumes:
+      - ./internal:/etc/cfw-proxy/internal
     environment:
-      - DEBUG=true
+      - DEBUG=false
+
+  # sudo docker build --build-arg BUILDPLATFORM=amd64 -t ghcr.io/shahradelahi/cfw-proxy:dev .
+  # sudo docker run --rm -ti ghcr.io/shahradelahi/cfw-proxy:dev
+  # sudo docker push ghcr.io/shahradelahi/cfw-proxy:dev
+  # sudo docker exec -it warp curl https://www.cloudflare.com/cdn-cgi/trace/

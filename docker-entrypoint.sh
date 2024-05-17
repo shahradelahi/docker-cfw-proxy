@@ -8,39 +8,24 @@ fi
 
 source /etc/cfw-proxy/internal/index.sh
 
-GOST_CONFIG=/etc/gost/gost.conf
 WGCF_CONFIG=/data/wgcf-profile.conf
 
-if [ ! -f "${GOST_CONFIG}" ]; then
-  log "notice" "Generating GOST config"
-  dirname "$GOST_CONFIG"
-  mkdir -p "$(dirname "${GOST_CONFIG}")"
-  touch "${GOST_CONFIG}"
-  generate_gost_config "${GOST_CONFIG}"
-else
-  log "notice" "Using existing GOST config"
-fi
-
-if [ ! -e "/data/wgcf-profile.conf" ]; then
-  log "notice" "Registering "
+if [ ! -e "$WGCF_CONFIG" ]; then
+  log "notice" "Registering CloudFlare WARP account"
   register_wgcf_config
 fi
 
-update_wgcf_config "${WGCF_CONFIG}"
+update_wgcf_config "$WGCF_CONFIG"
+# Fix permissions
+chmod 400 "$WGCF_CONFIG"
 
 sleep 1
-echo -e "\n========================= GOST ========================="
-cat "${GOST_CONFIG}"
 echo -e "\n======================== wgcf ========================="
-cat "${WGCF_CONFIG}"
+cat "$WGCF_CONFIG"
 echo -e "============================================================\n"
 sleep 1
 
-# Fix permissions
-chmod 400 ${GOST_CONFIG}
-chmod 400 "${GOST_CONFIG}"
-
-wg-quick up ${WGCF_CONFIG}
+wg-quick up "$WGCF_CONFIG"
 
 _USERNAME=${PROXY_USERNAME:-awesome-username}
 _PASSWORD=${PROXY_PASSWORD:-super-secret-password}

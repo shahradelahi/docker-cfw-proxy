@@ -25,7 +25,9 @@
 
 ## Features
 
-Not released yet
+- Support `Socks5`, `HTTP` and `Shadowsocks` proxy protocols
+- Apply license key to use existing `Warp+` subscription
+- Multi-platform image
 
 ## Build locally
 
@@ -52,14 +54,13 @@ Following platforms for this image are available:
 ```
 $ docker run --rm mplatform/mquery shahradel/cfw-proxy:latest
 Image: shahradel/cfw-proxy:latest
- * Manifest List: Yes
+ * Manifest List: Yes (Image type: application/vnd.oci.image.index.v1+json)
  * Supported platforms:
    - linux/amd64
    - linux/arm/v6
    - linux/arm/v7
    - linux/arm64
    - linux/386
-   - linux/ppc64le
    - linux/s390x
 ```
 
@@ -73,6 +74,7 @@ Image: shahradel/cfw-proxy:latest
 - `SHADOWSOCKS_PORT`: The port of `Shadowsocks` proxy (default `8338`)
 - `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `AES-256-CFB`)
 - `WGCF_LICENSE_KEY`: The license key of CloudFlare WARP+
+- `MTU`: The `mtu` of the WireGuard interface (default `1280`)
 
 > 💡 `WGCF_LICENSE_KEY` is optional and to obtain it follow guides in [`WARP+ license`](#warp-license) section.
 
@@ -105,6 +107,12 @@ $ docker run -d \
   -e "PROXY_USERNAME=awesome-username" \
   -e "PROXY_PASSWORD=super-secret-password" \
   -e "SHADOWSOCKS_CIPHER=AES-256-CFB" \
+  --privileged \
+  --cap-add NET_ADMIN \
+  --cap-add SYS_MODULE \
+  --sysctl net.ipv4.ip_forward=1 \
+  --sysctl net.ipv4.conf.all.src_valid_mark=1 \
+  --sysctl net.ipv6.conf.all.disable_ipv6=0 \
   shahradel/cfw-proxy
 ```
 
