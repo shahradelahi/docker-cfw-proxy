@@ -11,7 +11,7 @@ services:
       # Optional:
       - SHADOWSOCKS_CIPHER=AES-256-CFB
       #- DNS=1.1.1.2, 1.0.0.2, 2606:4700:4700::1112, 2606:4700:4700::1112
-      - DNS_PROFILE=malware-only
+      - DNS_PROFILE=MALWARE-ONLY # DEFAULT | MALWARE-ONLY | MALWARE-AND-ADULT
       - MTU=1300
       #- FAST_ENDPOINT=true
 
