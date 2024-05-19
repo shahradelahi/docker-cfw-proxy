@@ -12,7 +12,7 @@ RUN apk update \
 
 FROM alpine as base
 RUN apk add -U --no-cache \
-  iproute2 iptables net-tools fping \
+  iptables fping \
   bash curl \
   wireguard-tools \
   && rm -rf /var/cache/apk/*
