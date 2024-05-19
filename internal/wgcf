@@ -44,7 +44,12 @@ update_wgcf_config() {
   fi
 
   # Fast Endpoint
-  if [ -n "$FAST_ENDPOINT" ] && [ -z "$WGCF_ENDPOINT" ]; then
+  if [ -n "$FAST_ENDPOINT" ]; then
+    if [ -n "$WGCF_ENDPOINT" ]; then
+      log "error" "Conflicting parameters: FAST_ENDPOINT and WGCF_ENDPOINT"
+      exit 1
+    fi
+
     log "notice" "Searching for Fastest Endpoint..."
     _RAW_ENDPOINT="$(grep -Eo 'Endpoint = .*' wgcf-profile.conf | cut -d' ' -f3)"
     local PORT=$(awk -F: '{print $NF}' <<< "$_RAW_ENDPOINT")
