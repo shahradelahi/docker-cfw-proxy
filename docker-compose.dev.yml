@@ -1,14 +1,14 @@
-version: "3.8"
 services:
   cfw-proxy:
-    image: ghcr.io/shahradelahi/cfw-proxy:dev
+    image: ghcr.io/shahradelahi/cfw-proxy
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
       - ./internal:/etc/cfw-proxy/internal
+      - ./docker-entrypoint.sh:/entrypoint.sh
     environment:
-      - DEBUG=false
+      - DEBUG=1
 
   # sudo docker build --build-arg BUILDPLATFORM=amd64 -t ghcr.io/shahradelahi/cfw-proxy:dev .
   # sudo docker run --rm -ti ghcr.io/shahradelahi/cfw-proxy:dev

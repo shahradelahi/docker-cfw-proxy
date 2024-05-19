@@ -4,10 +4,8 @@ source "/etc/cfw-proxy/internal/string"
 source "/etc/cfw-proxy/internal/wgcf"
 
 log() {
-  local LEVEL=${1}
-  local MESSAGE=${2}
   # Feb 20 16:48:35 UTC [notice] message
-  echo -e "$(date +"%b %d %H:%M:%S %Z") [${LEVEL}] ${MESSAGE}"
+  echo -e "$(date +"%b %d %H:%M:%S %Z") [$1] $2"
 }
 
 generate_gost_config() {

@@ -30,6 +30,16 @@ update_wgcf_config() {
   sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" wgcf-profile.conf
   sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" wgcf-profile.conf
 
+  # Update MTU
+  if [ -n "$MTU" ]; then
+    sed -i -e "s/MTU =.*/MTU = $MTU/g" wgcf-profile.conf
+  fi
+
+  # Update DNS
+  if [ -n "$DNS" ]; then
+    sed -i -e "s/DNS =.*/DNS = $DNS/g" wgcf-profile.conf
+  fi
+
   cp wgcf-profile.conf "$DIST_DIR/wgcf-profile.conf"
   popd &> /dev/null || exit 1
   rm -fr "$TEMP_DIR"

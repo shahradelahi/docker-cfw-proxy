@@ -74,6 +74,7 @@ Image: shahradel/cfw-proxy:latest
 - `SHADOWSOCKS_PORT`: The port of `Shadowsocks` proxy (default `8338`)
 - `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `AES-256-CFB`)
 - `WGCF_LICENSE_KEY`: The license key of CloudFlare WARP+
+- `DNS`: The `dns` of the WireGuard interface (default `1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001`)
 - `MTU`: The `mtu` of the WireGuard interface (default `1280`)
 
 > 💡 `WGCF_LICENSE_KEY` is optional and to obtain it follow guides in [`WARP+ license`](#warp-license) section.
