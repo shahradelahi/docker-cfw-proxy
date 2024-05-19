@@ -78,6 +78,7 @@ Image: shahradel/cfw-proxy:latest
 - `WGCF_ENDPOINT_PORT`: WARP endpoint port (default `2408`)
 - `FAST_ENDPOINT`: Enables the feature for searching for endpoint with the lowest latency
 - `WGCF_LICENSE_KEY`: The license key of CloudFlare WARP+
+- `DNS_PROFILE`: Presets of CloudFlare DNS servers (default `default`)
 - `DNS`: The `dns` of the WireGuard interface (default `1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001`)
 - `MTU`: The `mtu` of the WireGuard interface (default `1280`)
 
