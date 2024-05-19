@@ -73,6 +73,10 @@ Image: shahradel/cfw-proxy:latest
 - `HTTP_PORT`: The port of `HTTP` proxy (default `8080`)
 - `SHADOWSOCKS_PORT`: The port of `Shadowsocks` proxy (default `8338`)
 - `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `AES-256-CFB`)
+- `WGCF_ENDPOINT`: The `endpoint` of the WARP endpoint (default `engage.cloudflareclient.com:2408`)
+- `WGCF_ENDPOINT_CIDR`: The `cidr` of the WARP endpoint (default `162.159.192.0/24`)
+- `WGCF_ENDPOINT_PORT`: WARP endpoint port (default `2408`)
+- `FAST_ENDPOINT`: Enables the feature for searching for endpoint with the lowest latency
 - `WGCF_LICENSE_KEY`: The license key of CloudFlare WARP+
 - `DNS`: The `dns` of the WireGuard interface (default `1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001`)
 - `MTU`: The `mtu` of the WireGuard interface (default `1280`)

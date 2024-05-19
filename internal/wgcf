@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/firewall/#warp-ingress-ip
+WGCF_ENDPOINT_CIDR="${WGCF_ENDPOINT_CIDR:-162.159.192.0/24}"
+
 update_wgcf_config() {
   local IFACE=$(ip route show default | awk '{print $5}')
   local IPv4=$(ip addr show dev "$IFACE" | awk '/inet /{print $2}' | cut -d' ' -f2)
@@ -40,26 +43,50 @@ update_wgcf_config() {
     sed -i -e "s/DNS =.*/DNS = $DNS/g" wgcf-profile.conf
   fi
 
+  # Fast Endpoint
+  if [ -n "$FAST_ENDPOINT" ] && [ -z "$WGCF_ENDPOINT" ]; then
+    log "notice" "Searching for Fastest Endpoint..."
+    _RAW_ENDPOINT="$(grep -Eo 'Endpoint = .*' wgcf-profile.conf | cut -d' ' -f3)"
+    local PORT=$(awk -F: '{print $NF}' <<< "$_RAW_ENDPOINT")
+
+    _RAW_FAST="$(fastest_cidr_ip "$WGCF_ENDPOINT_CIDR")" # 162.159.192.148 0.062
+    local ADDR=$(cut -d' ' -f1 <<< "$_RAW_FAST")
+    local ELAPSED=$(cut -d' ' -f2 <<< "$_RAW_FAST")
+
+    log "notice" "Fastest Endpoint: $ADDR ($ELAPSED ms)"
+    sed -i -e "s/Endpoint =.*/Endpoint = $ADDR:${WGCF_ENDPOINT_PORT:-$PORT}/g" wgcf-profile.conf
+  fi
+
+  # Update Endpoint
+  if [ -n "$WGCF_ENDPOINT" ]; then
+    sed -i -e "s/Endpoint =.*/Endpoint = $WGCF_ENDPOINT/g" wgcf-profile.conf
+  fi
+
   cp wgcf-profile.conf "$DIST_DIR/wgcf-profile.conf"
   popd &> /dev/null || exit 1
   rm -fr "$TEMP_DIR"
 }
 
-install_wgcf() {
-  case "$(arch)" in
-    x86_64 | amd64) _ARCH="amd64" ;;
-    aarch64 | arm64) _ARCH="arm64" ;;
-    armv7l | armv7) _ARCH="armv7" ;;
-    mips64le) _ARCH="mips64le_softfloat" ;;
-    386 | s390x)
-      _ARCH="$TARGETARCH"
-      ;;
-    *)
-      echo "Unsupported architecture. $(arch)"
-      exit 1
-      ;;
-  esac
-  local DOWNLOAD_URL="https://github.com/ViRb3/wgcf/releases/download/v${WGCF_VERSION}/wgcf_${WGCF_VERSION}_linux_${_ARCH}"
-  wget -qO /usr/local/bin/wgcf "$DOWNLOAD_URL"
-  chmod +x /usr/local/bin/wgcf
+fastest_cidr_ip() {
+  local _CIDR="$1"
+  _IP=""
+  _RTT=""
+  _RESULT_FILE="test.$(date +%s).log"
+  fping -aqe -c 3 -g "$_CIDR" &> "$_RESULT_FILE"
+  while read line; do
+    _TMP_IP=$(cut -d' ' -f1 <<< "$line")
+    _TMP_RTT=$(awk '{print $NF}' <<< "$line" | cut -d'/' -f2)
+    if [ -z "$_IP" ]; then
+      _IP="$_TMP_IP"
+      _RTT="$_TMP_RTT"
+    else
+      if awk -v a="$_TMP_RTT" -v b="$_RTT" 'BEGIN{exit !(a < b)}'; then
+        _IP="$_TMP_IP"
+        _RTT="$_TMP_RTT"
+      fi
+    fi
+  done < <(cat "$_RESULT_FILE")
+  rm -f "$_RESULT_FILE"
+
+  echo "$_IP $_RTT"
 }
