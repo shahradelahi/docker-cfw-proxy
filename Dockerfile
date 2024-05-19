@@ -4,16 +4,17 @@ ARG GOST_VERSION=3.0.0-rc10
 
 FROM --platform=${BUILDPLATFORM} gogost/gost:${GOST_VERSION} AS gost
 FROM --platform=${BUILDPLATFORM} alpine:${ALPINE_VERSION} as alpine
-
-FROM alpine as base
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apk update \
   && apk upgrade \
-  && apk add -U --no-cache \
-    iproute2 iptables net-tools \
-    bash curl \
-    wireguard-tools \
+  && rm -rf /var/cache/apk/*
+
+FROM alpine as base
+RUN apk add -U --no-cache \
+  iproute2 iptables net-tools \
+  bash curl \
+  wireguard-tools \
   && rm -rf /var/cache/apk/*
 COPY internal /etc/cfw-proxy/internal
 COPY docker-entrypoint.sh /entrypoint.sh
@@ -22,11 +23,12 @@ RUN chmod +x /entrypoint.sh
 FROM alpine as wgcf
 ARG TARGETARCH
 ARG WGCF_VERSION
-COPY internal/wgcf /etc/cfw-proxy/internal/wgcf
-RUN source /etc/cfw-proxy/internal/wgcf \
-  && install_wgcf
+COPY internal/install_wgcf /install_wgcf
+RUN chmod +x /install_wgcf \
+  && /install_wgcf \
+  && rm -f /install_wgcf
 
-FROM --platform=${BUILDPLATFORM} base
+FROM base
 LABEL maintainer="Shahrad Elahi <https://github.com/shahradelahi>"
 LABEL org.opencontainers.image.vendor=shahradelahi
 LABEL org.opencontainers.image.title="CloudFlare WARP Proxy"
