@@ -44,7 +44,7 @@ update_wgcf_config() {
   fi
 
   # Fast Endpoint
-  if [ -n "$FAST_ENDPOINT" ]; then
+  if [ -n "$FAST_ENDPOINT" ] && [ -z "$WGCF_ENDPOINT" ]; then
     log "notice" "Searching for Fastest Endpoint..."
     _RAW_ENDPOINT="$(grep -Eo 'Endpoint = .*' wgcf-profile.conf | cut -d' ' -f3)"
     local PORT=$(awk -F: '{print $NF}' <<< "$_RAW_ENDPOINT")
@@ -54,7 +54,12 @@ update_wgcf_config() {
     local ELAPSED=$(cut -d' ' -f2 <<< "$_RAW_FAST")
 
     log "notice" "Fastest Endpoint: $ADDR ($ELAPSED ms)"
-    sed -i -e "s/Endpoint =.*/Endpoint = $ADDR:${WGCF_PORT:-$PORT}/g" wgcf-profile.conf
+    sed -i -e "s/Endpoint =.*/Endpoint = $ADDR:${WGCF_ENDPOINT_PORT:-$PORT}/g" wgcf-profile.conf
+  fi
+
+  # Update Endpoint
+  if [ -n "$WGCF_ENDPOINT" ]; then
+    sed -i -e "s/Endpoint =.*/Endpoint = $WGCF_ENDPOINT/g" wgcf-profile.conf
   fi
 
   cp wgcf-profile.conf "$DIST_DIR/wgcf-profile.conf"
