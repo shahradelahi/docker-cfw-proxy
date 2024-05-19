@@ -2,30 +2,26 @@
 
 set -e
 
-if [ "${DEBUG}" == "true" ]; then
+if [ -n "$DEBUG" ]; then
   set -x
 fi
 
 source /etc/cfw-proxy/internal/index.sh
 
-WGCF_CONFIG=/data/wgcf-profile.conf
-
-if [ ! -e "$WGCF_CONFIG" ]; then
-  log "notice" "Registering CloudFlare WARP account"
-  register_wgcf_config
-fi
-
-update_wgcf_config "$WGCF_CONFIG"
-# Fix permissions
-chmod 400 "$WGCF_CONFIG"
+WGCF_CONFIG=/data/wgcf-account.toml
+WG_CONFIG=/data/wgcf-profile.conf
+update_wgcf_config "$WG_CONFIG"
+chmod 400 "$WG_CONFIG"
 
 sleep 1
-echo -e "\n======================== wgcf ========================="
+echo -e "\n========================= WGCF ========================="
 cat "$WGCF_CONFIG"
-echo -e "============================================================\n"
+echo -e "\n====================== WireGuard ======================="
+cat "$WG_CONFIG"
+echo -e "========================================================\n"
 sleep 1
 
-wg-quick up "$WGCF_CONFIG"
+wg-quick up "$WG_CONFIG"
 
 _USERNAME=${PROXY_USERNAME:-awesome-username}
 _PASSWORD=${PROXY_PASSWORD:-super-secret-password}

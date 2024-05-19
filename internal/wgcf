@@ -1,10 +1,5 @@
 #!/bin/bash
 
-register_wgcf_config() {
-  wgcf register --accept-tos
-  wgcf update
-}
-
 update_wgcf_config() {
   local IFACE=$(ip route show default | awk '{print $5}')
   local IPv4=$(ip addr show dev "$IFACE" | awk '/inet /{print $2}' | cut -d' ' -f2)
@@ -13,17 +8,31 @@ update_wgcf_config() {
   local TEMP_DIR="$(mktemp -d)"
   local DIST_DIR="$(dirname "$1")"
 
+  pushd "$TEMP_DIR" &> /dev/null || exit 1
+  if [ -f "$DIST_DIR/wgcf-account.toml" ]; then
+    cp "$DIST_DIR/wgcf-account.toml" "$TEMP_DIR/wgcf-account.toml"
+  else
+    wgcf register --accept-tos
+  fi
+
+  # Update License
+  if [ -n "$WGCF_LICENSE_KEY" ]; then
+    sed -i -e "s/license_key =.*/license_key = '$WGCF_LICENSE_KEY'/g" wgcf-account.toml
+  fi
+
   wgcf update
   wgcf generate
-  mkdir -p "$DIST_DIR"
-  mv wgcf-account.toml "$DIST_DIR/wgcf-account.toml"
-  mv wgcf-profile.conf "$TEMP_DIR/wgcf-profile.conf"
+  mkdir -p "$DIST_DIR" &> /dev/null
+  cp wgcf-account.toml "$DIST_DIR/wgcf-account.toml"
 
-  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" "$TEMP_DIR/wgcf-profile.conf"
-  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" "$TEMP_DIR/wgcf-profile.conf"
-  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" "$TEMP_DIR/wgcf-profile.conf"
-  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" "$TEMP_DIR/wgcf-profile.conf"
-  mv "$TEMP_DIR/wgcf-profile.conf" "$DIST_DIR/wgcf-profile.conf"
+  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" wgcf-profile.conf
+  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" wgcf-profile.conf
+  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" wgcf-profile.conf
+  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" wgcf-profile.conf
+
+  cp wgcf-profile.conf "$DIST_DIR/wgcf-profile.conf"
+  popd &> /dev/null || exit 1
+  rm -fr "$TEMP_DIR"
 }
 
 install_wgcf() {
