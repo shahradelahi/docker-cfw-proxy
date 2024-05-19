@@ -12,6 +12,7 @@ services:
       - SHADOWSOCKS_CIPHER=AES-256-CFB
       - DNS=1.1.1.2, 1.0.0.2, 2606:4700:4700::1112, 2606:4700:4700::1112
       - MTU=1300
+      - FAST_ENDPOINT=true
 
     image: ghcr.io/shahradelahi/cfw-proxy
     container_name: cfw-proxy
