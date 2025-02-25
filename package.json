@@ -27,6 +27,6 @@
   "dependencies": {
     "@changesets/cli": "^2.27.1",
     "prettier": "^3.2.5",
-    "prettier-plugin-sh": "^0.14.0"
+    "prettier-plugin-sh": "^0.15.0"
   }
 }
