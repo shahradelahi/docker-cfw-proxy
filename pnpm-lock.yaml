@@ -10,10 +10,10 @@ dependencies:
     version: 2.27.2
   prettier:
     specifier: ^3.2.5
-    version: 3.2.5
+    version: 3.5.3
   prettier-plugin-sh:
     specifier: ^0.14.0
-    version: 0.14.0(prettier@3.2.5)
+    version: 0.14.0(prettier@3.5.3)
 
 packages:
 
@@ -1394,14 +1394,14 @@ packages:
       which-pm: 2.0.0
     dev: false
 
-  /prettier-plugin-sh@0.14.0(prettier@3.2.5):
+  /prettier-plugin-sh@0.14.0(prettier@3.5.3):
     resolution: {integrity: sha512-hfXulj5+zEl/ulrO5kMuuTPKmXvOg0bnLHY1hKFNN/N+/903iZbNp8NyZBTsgI8dtkSgFfAEIQq0IQTyP1ZVFQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       prettier: ^3.0.3
     dependencies:
       mvdan-sh: 0.10.1
-      prettier: 3.2.5
+      prettier: 3.5.3
       sh-syntax: 0.4.2
     dev: false
 
@@ -1411,8 +1411,8 @@ packages:
     hasBin: true
     dev: false
 
-  /prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+  /prettier@3.5.3:
+    resolution: {integrity: sha512-QQtaxnoDJeAkDvDKWCLiwIXkTgRhwYDEQCghU9Z6q03iyek/rxRh/2lC3HB7P8sWT2xC/y5JDctPLBIGzHKbhw==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
