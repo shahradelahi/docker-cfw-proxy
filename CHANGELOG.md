@@ -1,5 +1,11 @@
 # docker-cfw-proxy
 
+## 1.1.1
+
+### Patch Changes
+
+- 5d8ee40: fix: update dependencies
+
 ## 1.1.0
 
 ### Minor Changes
