@@ -2,7 +2,6 @@ services:
   cfw-proxy:
     environment:
       # ⚠️ Required:
-      # Make sure change this to your host's public address
       - PROXY_USERNAME=awesome-username
       # ⚠️ Required:
       # You can use `openssl rand -base64 8` to generate a secure password
