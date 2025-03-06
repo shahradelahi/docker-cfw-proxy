@@ -78,20 +78,22 @@ jobs:
             type=semver,pattern={{version}},value=${{ matrix.package.version }}
 
       - name: Build and push
-        uses: docker/bake-action@v4
+        uses: docker/bake-action@v6
         with:
           files: |
             ./docker-bake.hcl
-            ${{ steps.meta.outputs.bake-file }}
+            cwd://${{ steps.meta.outputs.bake-file }}
           targets: image-all
           push: true
 
       - name: Check manifest
+        if: github.event_name != 'pull_request'
         run: |
           docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
           docker buildx imagetools inspect ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
 
       - name: Inspect image
+        if: github.event_name != 'pull_request'
         run: |
           docker pull ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
           docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
