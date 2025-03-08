@@ -76,9 +76,7 @@ jobs:
             ${{ env.GHCR_SLUG }}
           tags: |
             type=semver,pattern={{version}},value=${{ matrix.package.version }}
-            type=match,pattern=(.*)-r,group=1
-            type=ref,event=pr
-            type=edge
+            type=latest
 
       - name: Build and push
         uses: docker/bake-action@v6

@@ -1,7 +1,30 @@
-#!/bin/bash
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+set -e
+
+if [ -n "$DEBUG" ]; then
+  set -x
+fi
 
 # https://developers.cloudflare.com/cloudflare-one/connections/connect-devices/warp/deployment/firewall/#warp-ingress-ip
 WGCF_ENDPOINT_CIDR="${WGCF_ENDPOINT_CIDR:-162.159.192.0/24}"
+
+WGCF_CONFIG=/data/wgcf-account.toml
+WG_CONFIG=/data/wgcf-profile.conf
+
+log() {
+  # Feb 20 16:48:35 UTC [notice] message
+  echo -e "$(date +"%b %d %H:%M:%S %Z") [$1] $2"
+}
+
+uppercase() {
+  echo "$1" | tr '[:lower:]' '[:upper:]'
+}
+
+urlencode() {
+  printf %s "$1" | jq -sRr @uri
+}
 
 update_wgcf_config() {
   local IFACE=$(ip route show default | awk '{print $5}')
@@ -28,10 +51,15 @@ update_wgcf_config() {
   mkdir -p "$DIST_DIR" &> /dev/null
   cp wgcf-account.toml "$DIST_DIR/wgcf-account.toml"
 
-  sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from ${IPv6}  lookup main" wgcf-profile.conf
-  sed -i "/\[Interface\]/a PostUp = ip -6 rule add from ${IPv6} lookup main" wgcf-profile.conf
-  sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from ${IPv4} lookup main" wgcf-profile.conf
-  sed -i "/\[Interface\]/a PostUp = ip -4 rule add from ${IPv4} lookup main" wgcf-profile.conf
+  if [[ -n "$IPv6" ]]; then
+    sed -i "/\[Interface\]/a PostDown = ip -6 rule delete from $IPv6 lookup main" wgcf-profile.conf
+    sed -i "/\[Interface\]/a PostUp = ip -6 rule add from $IPv6 lookup main" wgcf-profile.conf
+  fi
+
+  if [[ -n "$IPv4" ]]; then
+    sed -i "/\[Interface\]/a PostDown = ip -4 rule delete from $IPv4 lookup main" wgcf-profile.conf
+    sed -i "/\[Interface\]/a PostUp = ip -4 rule add from $IPv4 lookup main" wgcf-profile.conf
+  fi
 
   # Update MTU
   if [ -n "$MTU" ]; then
@@ -114,3 +142,8 @@ fastest_cidr_ip() {
 
   echo "$_IP $_RTT"
 }
+
+update_wgcf_config "$WG_CONFIG"
+chmod 400 "$WG_CONFIG"
+
+

@@ -1,0 +1,17 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+set -e
+
+WGCF_CONFIG=/data/wgcf-account.toml
+WG_CONFIG=/data/wgcf-profile.conf
+
+sleep 1
+echo -e "\n========================= WGCF ========================="
+cat "$WGCF_CONFIG"
+echo -e "\n====================== WireGuard ======================="
+cat "$WG_CONFIG"
+echo -e "========================================================\n"
+sleep 1
+
+wg-quick up "$WG_CONFIG"

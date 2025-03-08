@@ -11,10 +11,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BUILD_PLATFORMS: linux/amd64,linux/arm64
   DOCKERHUB_SLUG: shahradel/cfw-proxy
   GHCR_SLUG: ghcr.io/shahradelahi/cfw-proxy
-  TAG: dev
 
 permissions:
   contents: read
@@ -47,9 +45,7 @@ jobs:
             ${{ env.DOCKERHUB_SLUG }}
             ${{ env.GHCR_SLUG }}
           tags: |
-            type=match,pattern=(.*)-r,group=1
-            type=ref,event=pr
-            type=edge
+            type=dev
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -84,13 +80,13 @@ jobs:
       - name: Check manifest
         if: github.event_name != 'pull_request'
         run: |
-          docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ env.TAG }}
-          docker buildx imagetools inspect ${{ env.GHCR_SLUG }}:${{ env.TAG }}
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
 
       - name: Inspect image
         if: github.event_name != 'pull_request'
         run: |
-          docker pull ${{ env.DOCKERHUB_SLUG }}:${{ env.TAG }}
-          docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ env.TAG }}
-          docker pull ${{ env.GHCR_SLUG }}:${{ env.TAG }}
-          docker image inspect ${{ env.GHCR_SLUG }}:${{ env.TAG }}
+          docker pull ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.meta.outputs.version }}
+          docker pull ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
+          docker image inspect ${{ env.GHCR_SLUG }}:${{ steps.meta.outputs.version }}
