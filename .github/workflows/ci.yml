@@ -45,7 +45,8 @@ jobs:
             ${{ env.DOCKERHUB_SLUG }}
             ${{ env.GHCR_SLUG }}
           tags: |
-            type=dev
+            type=raw,value=dev
+            type=sha
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
