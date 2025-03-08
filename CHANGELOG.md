@@ -1,5 +1,15 @@
 # docker-cfw-proxy
 
+## 1.2.0
+
+### Minor Changes
+
+- f21610c: feat: using `s6-overlay`
+
+### Patch Changes
+
+- f21610c: fix: issue when ipv6 is not available
+
 ## 1.1.1
 
 ### Patch Changes
