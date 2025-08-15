@@ -10,12 +10,6 @@
         "parser": "markdown",
         "printWidth": 79
       }
-    },
-    {
-      "files": ["Dockerfile", "*.dockerfile"],
-      "options": {
-        "spaceRedirects": false
-      }
     }
   ],
   "plugins": ["prettier-plugin-sh"]
