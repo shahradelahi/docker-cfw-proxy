@@ -72,7 +72,7 @@ Image: shahradel/cfw-proxy:latest
 - `SOCKS5_PORT`: The port of `Socks5` proxy (default `1080`)
 - `HTTP_PORT`: The port of `HTTP` proxy (default `8080`)
 - `SHADOWSOCKS_PORT`: The port of `Shadowsocks` proxy (default `8338`)
-- `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `AES-256-CFB`)
+- `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `CHACHA20-IETF-POLY1305`)
 - `WGCF_ENDPOINT`: The `endpoint` of the WARP endpoint (default `engage.cloudflareclient.com:2408`)
 - `WGCF_ENDPOINT_CIDR`: The `cidr` of the WARP endpoint (default `162.159.192.0/24`)
 - `WGCF_ENDPOINT_PORT`: WARP endpoint port (default `2408`)
@@ -112,7 +112,7 @@ $ docker run -d \
   -p 1080:1080 -p 8080:8080 -p 8338:8338 \
   -e "PROXY_USERNAME=awesome-username" \
   -e "PROXY_PASSWORD=super-secret-password" \
-  -e "SHADOWSOCKS_CIPHER=AES-256-CFB" \
+  -e "SHADOWSOCKS_CIPHER=CHACHA20-IETF-POLY1305" \
   --privileged \
   --cap-add NET_ADMIN \
   --cap-add SYS_MODULE \
