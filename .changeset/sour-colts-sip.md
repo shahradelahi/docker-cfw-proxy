@@ -1,5 +1,5 @@
 ---
-"docker-cfw-proxy": patch
+"docker-cfw-proxy": major
 ---
 
-fix: Update default Shadowsocks cipher to `CHACHA20-IETF-POLY1305`
+Default `Shadowsocks` proxy is removed and instruction for custom proxy config added to `README.md` file.
