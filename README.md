@@ -67,12 +67,8 @@ Image: shahradel/cfw-proxy:latest
 ## Environment variables
 
 - `TZ`: Timezone assigned to the container (default `UTC`)
-- `PROXY_USERNAME`: The username of `Socks5` and `HTTP` proxy (default `awesome-username`)
-- `PROXY_PASSWORD`: The password of all proxy protocols (default `super-secret-password`)
 - `SOCKS5_PORT`: The port of `Socks5` proxy (default `1080`)
 - `HTTP_PORT`: The port of `HTTP` proxy (default `8080`)
-- `SHADOWSOCKS_PORT`: The port of `Shadowsocks` proxy (default `8338`)
-- `SHADOWSOCKS_CIPHER`: The cipher of `Shadowsocks` proxy (default `CHACHA20-IETF-POLY1305`)
 - `WGCF_ENDPOINT`: The `endpoint` of the WARP endpoint (default `engage.cloudflareclient.com:2408`)
 - `WGCF_ENDPOINT_CIDR`: The `cidr` of the WARP endpoint (default `162.159.192.0/24`)
 - `WGCF_ENDPOINT_PORT`: WARP endpoint port (default `2408`)
@@ -88,7 +84,6 @@ Image: shahradel/cfw-proxy:latest
 
 - `1080`: `Socks5` proxy
 - `8080`: `HTTP` proxy
-- `8338`: `Shadowsocks` proxy
 
 ## Usage
 
@@ -109,10 +104,9 @@ You can also use the following minimal command:
 ```bash
 $ docker run -d \
   --name warp \
-  -p 1080:1080 -p 8080:8080 -p 8338:8338 \
+  -p 1080:1080 -p 8080:8080 \
   -e "PROXY_USERNAME=awesome-username" \
   -e "PROXY_PASSWORD=super-secret-password" \
-  -e "SHADOWSOCKS_CIPHER=CHACHA20-IETF-POLY1305" \
   --privileged \
   --cap-add NET_ADMIN \
   --cap-add SYS_MODULE \
@@ -120,6 +114,26 @@ $ docker run -d \
   --sysctl net.ipv4.conf.all.src_valid_mark=1 \
   --sysctl net.ipv6.conf.all.disable_ipv6=0 \
   shahradel/cfw-proxy
+```
+
+## Advanced Usage
+
+This project utilizes `gost` for creating proxies. You can find more information about `gost` [here](https://gost.run/en/).
+
+It is possible to modify the script of `gost` by mounting your own script at `/etc/s6-overlay/s6-rc.d/svc-gost/run`.
+
+Here is a basic example for running `socks5` and `http` proxy with authentication:
+
+```bash
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+
+USERNAME="awesome-username"
+PASSWORD="super-secret-password"
+
+gost \
+  -L "socks5://${USERNAME}:${PASSWORD}@:1080" \
+  -L "http://${USERNAME}:${PASSWORD}@:8080"
 ```
 
 ## Upgrade
