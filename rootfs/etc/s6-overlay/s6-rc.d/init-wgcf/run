@@ -71,6 +71,9 @@ update_wgcf_config() {
     sed -i -e "s/DNS =.*/DNS = $DNS/g" wgcf-profile.conf
   fi
 
+  # Add PersistentKeepalive
+  sed -i "/\[Peer\]/a PersistentKeepalive = ${KEEP_ALIVE:-10}" wgcf-profile.conf
+
   # Fast Endpoint
   if [ -n "$FAST_ENDPOINT" ]; then
     if [ -n "$WGCF_ENDPOINT" ]; then

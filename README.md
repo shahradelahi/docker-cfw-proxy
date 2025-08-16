@@ -77,6 +77,7 @@ Image: shahradel/cfw-proxy:latest
 - `DNS_PROFILE`: Presets of CloudFlare DNS servers (default `default`)
 - `DNS`: The `dns` of the WireGuard interface (default `1.1.1.1, 1.0.0.1, 2606:4700:4700::1111, 2606:4700:4700::1001`)
 - `MTU`: The `mtu` of the WireGuard interface (default `1280`)
+- `KEEP_ALIVE`: The `keep-alive` of the WireGuard interface (default `10`)
 
 > 💡 `WGCF_LICENSE_KEY` is optional and to obtain it follow guides in [`WARP+ license`](#warp-license) section.
 
