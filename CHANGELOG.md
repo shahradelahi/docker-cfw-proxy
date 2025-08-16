@@ -1,5 +1,16 @@
 # docker-cfw-proxy
 
+## 2.0.0
+
+### Major Changes
+
+- ecbd7a5: Default proxy config is now `noauth` and only `Socks5` and `HTTP` is available.
+- 6b6eef1: Default `Shadowsocks` proxy is removed and instruction for custom proxy config added to `README.md` file.
+
+### Minor Changes
+
+- 328220a: feat: Add `KEEP_ALIVE` option for WireGuard interface
+
 ## 1.2.1
 
 ### Patch Changes
