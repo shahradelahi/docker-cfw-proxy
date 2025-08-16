@@ -1,17 +1,8 @@
 #!/usr/bin/with-contenv bash
 # shellcheck shell=bash
 
-USERNAME=${PROXY_USERNAME:-awesome-username}
-PASSWORD=${PROXY_PASSWORD:-super-secret-password}
-SHADOWSOCKS_CIPHER=${SHADOWSOCKS_CIPHER:-CHACHA20-IETF-POLY1305}
-
-lowercase() {
-  echo "$1" | tr '[:upper:]' '[:lower:]'
-}
-
 export GOST_LOGGER_LEVEL=${GOST_LOGGER_LEVEL:-info}
 
 gost \
-  -L "socks5://${USERNAME}:${PASSWORD}@:${SOCKS5_PORT:-1080}" \
-  -L "http://${USERNAME}:${PASSWORD}@:${HTTP_PORT:-8080}" \
-  -L "ss://$(lowercase "$SHADOWSOCKS_CIPHER"):${PASSWORD}@:${SHADOWSOCKS_PORT:-8338}"
+  -L "socks5://:${SOCKS5_PORT:-1080}" \
+  -L "http://:${HTTP_PORT:-8080}"
