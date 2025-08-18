@@ -1,6 +1,6 @@
 {
   "name": "docker-cfw-proxy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "scripts": {
     "dev": "pnpm drop && docker compose -f docker-compose.yml -f docker-compose.dev.yml up",
