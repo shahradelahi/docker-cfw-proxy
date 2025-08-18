@@ -2,8 +2,11 @@ ARG ALPINE_VERSION=3.22
 ARG WGCF_VERSION=2.2.28
 ARG GOST_VERSION=3.2.4
 
-FROM --platform=${BUILDPLATFORM} gogost/gost:${GOST_VERSION} AS gost
-FROM --platform=${BUILDPLATFORM} crazymax/alpine-s6:${ALPINE_VERSION} AS alpine
+FROM --platform=$BUILDPLATFORM tonistiigi/xx AS xx
+
+FROM --platform=$BUILDPLATFORM gogost/gost:${GOST_VERSION} AS gost
+
+FROM --platform=$BUILDPLATFORM crazymax/alpine-s6:${ALPINE_VERSION} AS base
 ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ >/etc/timezone
 RUN apk update \
@@ -14,22 +17,28 @@ RUN apk update \
   fping \
  && rm -rf /var/cache/apk/*
 
-FROM golang:alpine AS wgcf
+FROM --platform=$BUILDPLATFORM golang:alpine AS wgcf
+COPY --from=xx / /
 ARG WGCF_VERSION
+ARG TARGETPLATFORM
 WORKDIR /app
-RUN apk add --no-cache make git \
- && git clone https://github.com/ViRb3/wgcf.git \
- && cd wgcf \
- && git checkout --detach "v$WGCF_VERSION" \
- && go mod tidy \
- && GO111MODULE=on CGO_ENABLED=0 go build -v -ldflags '-w -s -buildid=' -tags '' -trimpath \
- && mv wgcf /usr/local/bin/ \
- && chmod +x /usr/local/bin/wgcf \
- && cd - \
- && rm -rf wgcf \
- && rm -rf /var/cache/apk/*
+RUN <<EOT
+  set -ex
+  apk add --no-cache make git
+  git clone https://github.com/ViRb3/wgcf.git
+  cd wgcf
+  git checkout --detach "v$WGCF_VERSION"
+  go mod tidy
+  CGO_ENABLED=0 xx-go build -v -ldflags '-w -s -buildid=' -tags '' -trimpath
+  xx-verify wgcf
+  mv wgcf /usr/local/bin/
+  chmod +x /usr/local/bin/wgcf
+  cd -
+  rm -rf wgcf
+  rm -rf /var/cache/apk/*
+EOT
 
-FROM alpine
+FROM base
 COPY --from=wgcf /usr/local/bin/wgcf /usr/local/bin/wgcf
 COPY --from=gost /bin/gost /usr/local/bin/gost
 
