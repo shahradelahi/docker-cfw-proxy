@@ -1,5 +1,11 @@
 # docker-cfw-proxy
 
+## 2.0.1
+
+### Patch Changes
+
+- 10ea365: Using `xx` dockerfile cross-compilation helpers
+
 ## 2.0.0
 
 ### Major Changes
