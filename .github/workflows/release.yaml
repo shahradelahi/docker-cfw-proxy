@@ -8,7 +8,6 @@ on:
 concurrency: "${{ github.workflow }}-${{ github.ref }}"
 
 env:
-  BUILD_PLATFORMS: linux/amd64,linux/arm64
   DOCKERHUB_SLUG: shahradel/cfw-proxy
   GHCR_SLUG: ghcr.io/shahradelahi/cfw-proxy
 
