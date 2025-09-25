@@ -22,7 +22,7 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
@@ -36,7 +36,7 @@ jobs:
     if: github.repository == 'shahradelahi/docker-cfw-proxy'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
