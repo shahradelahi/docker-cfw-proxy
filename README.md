@@ -106,8 +106,6 @@ You can also use the following minimal command:
 $ docker run -d \
   --name warp \
   -p 1080:1080 -p 8080:8080 \
-  -e "PROXY_USERNAME=awesome-username" \
-  -e "PROXY_PASSWORD=super-secret-password" \
   --privileged \
   --cap-add NET_ADMIN \
   --cap-add SYS_MODULE \
