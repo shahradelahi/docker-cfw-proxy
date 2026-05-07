@@ -16,7 +16,7 @@ importers:
         version: 3.6.2
       prettier-plugin-sh:
         specifier: ^0.18.0
-        version: 0.18.0(prettier@3.6.2)
+        version: 0.18.1(prettier@3.6.2)
 
 packages:
 
@@ -97,8 +97,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@reteps/dockerfmt@0.3.6':
-    resolution: {integrity: sha512-Tb5wIMvBf/nLejTQ61krK644/CEMB/cpiaIFXqGApfGqO3GwcR3qnI0DbmkFVCl2OyEp8LnLX3EkucoL0+tbFg==}
+  '@reteps/dockerfmt@0.5.2':
+    resolution: {integrity: sha512-Hbr7yen4fP5TxGM54ucXa4o5NwWXatJ6Bd9I8gp0PValYbI4Rug2Gu+rVv7K7o/efQc3F5ctqWJz47rYaa8zBw==}
     engines: {node: ^v12.20.0 || ^14.13.0 || >=16.0.0}
 
   '@types/node@12.20.55':
@@ -310,8 +310,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  prettier-plugin-sh@0.18.0:
-    resolution: {integrity: sha512-cW1XL27FOJQ/qGHOW6IHwdCiNWQsAgK+feA8V6+xUTaH0cD3Mh+tFAtBvEEWvuY6hTDzRV943Fzeii+qMOh7nQ==}
+  prettier-plugin-sh@0.18.1:
+    resolution: {integrity: sha512-uZmU22wBMevjh3rmCatNQqiEer2+5KLa0xYCBX6zQQUQkcNzVL+s6FbPKK6ZSUNUbQk6jMAcQHrYPvuL2W6ihQ==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       prettier: ^3.6.0
@@ -592,7 +592,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@reteps/dockerfmt@0.3.6': {}
+  '@reteps/dockerfmt@0.5.2': {}
 
   '@types/node@12.20.55': {}
 
@@ -777,9 +777,9 @@ snapshots:
 
   pify@4.0.1: {}
 
-  prettier-plugin-sh@0.18.0(prettier@3.6.2):
+  prettier-plugin-sh@0.18.1(prettier@3.6.2):
     dependencies:
-      '@reteps/dockerfmt': 0.3.6
+      '@reteps/dockerfmt': 0.5.2
       prettier: 3.6.2
       sh-syntax: 0.5.8
 
